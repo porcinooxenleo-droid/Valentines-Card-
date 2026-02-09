@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Our Journey</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet">
     <style>
@@ -17,7 +17,8 @@
             margin: 0; padding: 0; height: 100%;
             font-family: 'Quicksand', 'Segoe UI', sans-serif;
             background-color: var(--soft-pink);
-            overflow: hidden;
+            /* Start hidden to prevent accidental scrolling on login */
+            overflow: hidden; 
         }
 
         .stage {
@@ -35,25 +36,29 @@
 
         h1, h2 { color: var(--dark-red); text-align: center; padding: 0 10px; }
 
-        /* VIDEO SCROLL SYSTEM */
+        /* VIDEO SCROLL SYSTEM - FIXED FOR SCROLLING */
         #video-scroll-screen {
+            position: absolute; /* Changed to absolute to allow document height */
+            top: 0; left: 0; width: 100%;
             background-color: #1a1a1a;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scrollbar-width: none;
+            display: none;
+            flex-direction: column;
+            z-index: 50;
         }
-        #video-scroll-screen::-webkit-scrollbar { display: none; }
 
         .video-snap-container {
-            width: 100%; height: 100vh; scroll-snap-align: start;
-            display: flex; align-items: center; justify-content: center; position: relative;
+            width: 100%; height: 100vh;
+            display: flex; align-items: center; justify-content: center; 
+            position: relative;
+            scroll-snap-align: start;
         }
+
         .video-card-wrapper {
             width: 90%; max-width: 320px; height: 80vh;
             background: #000; border-radius: 30px; border: 4px solid var(--primary-red);
             overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;
         }
-        .scroll-vid { width: 100%; height: 100%; object-fit: cover; z-index: 2; position: relative; }
+        .scroll-vid { width: 100%; height: 100%; object-fit: cover; z-index: 2; }
 
         /* FINAL TEXT ANIMATION */
         .final-text {
@@ -73,10 +78,10 @@
 
         /* HEART STORM */
         .heart-float {
-            position: absolute;
+            position: fixed; /* Fixed so they float over the whole viewport */
             bottom: -50px;
             pointer-events: none;
-            z-index: 15;
+            z-index: 100;
             animation: floatUp linear forwards;
         }
 
@@ -103,7 +108,6 @@
         #letter-screen { background-color: var(--parchment); overflow-y: auto; justify-content: flex-start; padding: 50px 20px; }
         .planner-group { margin: 15px 0; display: flex; flex-direction: column; width: 80%; }
         select, input[type="time"] { padding: 10px; border-radius: 10px; border: 1px solid var(--primary-red); }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
     </style>
 </head>
 <body>
@@ -112,13 +116,12 @@
 
 <div id="login-screen" class="stage">
     <div class="login-gif-container">
-        <img src="login.gif" alt="Welcome" onerror="console.log('GIF failed to load from local folder')">
+        <img src="login.gif" alt="Welcome">
     </div>
     <h2>HI BABY SOPIEEEE!! <3</h2>
     <input type="password" id="passInput" placeholder="Password...">
     <button class="btn-red" onclick="unlockGallery()">UNLOCK MY SURPRISE!!</button>
-    
-    <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); cursor:pointer; text-decoration:underline; font-family: 'Quicksand', sans-serif;">Need a hint?</button>
+    <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); cursor:pointer; text-decoration:underline;">Need a hint?</button>
     <p id="hint">Hint: Secret Muna 😛😛😛</p>
 </div>
 
@@ -132,7 +135,7 @@
     <button class="btn-red" onclick="showVideoScroll()">Watch Our Videos ↓</button>
 </div>
 
-<div id="video-scroll-screen" class="stage">
+<div id="video-scroll-screen">
     <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video1.mp4" type="video/mp4"></video></div></div>
     <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video2.mp4" type="video/mp4"></video></div></div>
     <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video3.mp4" type="video/mp4"></video></div></div>
@@ -159,7 +162,7 @@
 
 <div id="letter-screen" class="stage">
     <h1>My Dearest Sopi,</h1>
-    <div id="typewriter" style="max-width: 600px; line-height: 1.8; font-size: 1.15rem; color: #333;"></div>
+    <div id="typewriter" style="max-width: 600px; line-height: 1.8; font-size: 1.15rem; color: #333; padding: 0 20px;"></div>
     <button id="next-to-question" class="btn-red" style="display:none;" onclick="showQuestion()">Next Surprise ✨</button>
 </div>
 
@@ -167,7 +170,7 @@
     <h1>Will you be my Valentine? 💖</h1>
     <div style="display: flex; gap: 15px;">
         <button class="btn-red" onclick="showPlanner()">OPOOO!!</button>
-        <button id="no-btn" class="btn-red" style="background:#999;" onmouseover="moveNo()">no pakipot muna hehe</button>
+        <button id="no-btn" class="btn-red" style="background:#999;" onmouseover="moveNo()" onclick="moveNo()">no pakipot muna hehe</button>
     </div>
 </div>
 
@@ -189,8 +192,23 @@
 
 <script>
     function navigateTo(stageId) {
+        // Hide fixed stages
         document.querySelectorAll('.stage').forEach(s => s.style.display = 'none');
-        document.getElementById(stageId).style.display = 'flex';
+        // Hide video screen specifically
+        document.getElementById('video-scroll-screen').style.display = 'none';
+        
+        const target = document.getElementById(stageId);
+        
+        if(stageId === 'video-scroll-screen') {
+            target.style.display = 'flex';
+            document.body.style.overflowY = 'auto'; // UNLOCK SCROLL
+            document.documentElement.style.overflowY = 'auto';
+        } else {
+            target.style.display = 'flex';
+            document.body.style.overflowY = 'hidden'; // LOCK SCROLL
+            document.documentElement.style.overflowY = 'hidden';
+            window.scrollTo(0, 0); 
+        }
     }
 
     function unlockGallery() {
@@ -202,13 +220,14 @@
 
     function showVideoScroll() {
         navigateTo('video-scroll-screen');
+        const videos = document.querySelectorAll('.scroll-vid');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.play();
                 else entry.target.pause();
             });
         }, { threshold: 0.6 });
-        document.querySelectorAll('.scroll-vid').forEach(v => observer.observe(v));
+        videos.forEach(v => observer.observe(v));
     }
 
     function unlockLetter() { navigateTo('letter-screen'); typeWriter(); }
@@ -227,21 +246,21 @@
     }
 
     function showQuestion() { navigateTo('question-screen'); }
+    
     function moveNo() {
         const btn = document.getElementById('no-btn');
-        btn.style.position = 'absolute';
-        btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-        btn.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+        btn.style.position = 'fixed';
+        btn.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+        btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
     }
+    
     function showPlanner() { navigateTo('planner-screen'); }
 
     function showFinalMessage() {
         navigateTo('message-screen');
-        // Initial Massive Burst (Red, White, Pink)
         for(let i=0; i<150; i++) {
             setTimeout(createHeart, i * 10);
         }
-        // Continuous storm
         setInterval(createHeart, 60);
     }
 
@@ -260,5 +279,4 @@
     }
 </script>
 </body>
-
 </html>
