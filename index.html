@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #ff4d6d;
+            --soft-pink: #fff0f3;
+            --dark-red: #800e13;
+            --parchment: #fffaf0;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            min-height: 100%;
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+            background-color: var(--soft-pink);
+            overflow-x: hidden;
+            overflow-y: auto !important;
+        }
+
+        .stage {
+            width: 100%;
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-color: var(--soft-pink);
+            box-sizing: border-box;
+            padding: 40px 0;
+        }
+
+        #login-screen { display: flex; background-color: #ffb3c1; z-index: 100; }
+
+        h1, h2 { color: var(--dark-red); text-align: center; margin: 10px 0; padding: 0 15px; }
+
+        /* VIDEO SCROLL SYSTEM */
+        #video-scroll-screen {
+            background-color: #1a1a1a;
+            display: none;
+            width: 100%;
+        }
+
+        .video-snap-container {
+            width: 100%; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            scroll-snap-align: start;
+        }
+
+        .video-card-wrapper {
+            width: 85%; max-width: 320px; height: 75vh;
+            background: #000; border-radius: 30px; border: 4px solid var(--primary-red);
+            overflow: hidden; position: relative;
+        }
+        .scroll-vid { width: 100%; height: 100%; object-fit: cover; }
+
+        /* UI ELEMENTS */
+        .btn-red {
+            background-color: var(--primary-red); color: white; border: none;
+            padding: 15px 30px; border-radius: 30px; cursor: pointer;
+            font-size: 1rem; font-weight: bold; margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        .gallery { display: grid; gap: 20px; width: 90%; margin-bottom: 20px; }
+        .photo-card { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .photo-card img { width: 100%; border-radius: 10px; }
+
+        #letter-screen { background-color: var(--parchment); padding: 60px 25px; justify-content: flex-start; }
+        #typewriter { max-width: 600px; line-height: 1.8; font-size: 1.1rem; color: #333; text-align: left; white-space: pre-wrap; }
+
+        /* QUESTIONNAIRE SCROLLING FIX */
+        #planner-screen { justify-content: flex-start; overflow-y: auto; padding-top: 40px; }
+
+        .heart-float {
+            position: fixed; bottom: -50px; pointer-events: none; z-index: 999;
+            animation: floatUp linear forwards;
+        }
+        @keyframes floatUp { to { transform: translateY(-120vh) rotate(360deg); opacity: 0; } }
+
+        .planner-group { margin: 12px 0; display: flex; flex-direction: column; width: 85%; max-width: 400px; }
+
+        input[type="text"], input[type="password"] {
+            padding: 12px;
+            border-radius: 15px;
+            border: 2px dashed var(--primary-red);
+            font-family: 'Quicksand';
+            background: white;
+            color: var(--dark-red);
+            outline: none;
+            text-align: center;
+            margin-top: 5px;
+        }
+        label {
+            font-weight: bold;
+            color: var(--dark-red);
+            margin-bottom: 2px;
+            font-size: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<audio id="bg-audio" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
+
+<div id="login-screen" class="stage">
+    <img src="login.gif" alt="Welcome" style="width:150px; border-radius:20px; margin-bottom:20px;">
+    <h2>HI BABY SOPIEEEE!! ❤️</h2>
+    <input type="password" id="passInput" placeholder="Password...">
+
+    <button class="btn-red" onclick="unlockGallery()">UNLOCK MY SURPRISE!!</button>
+
+    <div style="text-align: center; margin-top: 5px;">
+        <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); text-decoration:underline; cursor:pointer; font-family:'Quicksand';">Need a hint?</button>
+        <p id="hint" style="display:none; font-style:italic; color:var(--dark-red); margin-top:10px;">Hint: February 13th</p>
+    </div>
+</div>
+
+<div id="gallery-screen" class="stage">
+    <h1>Our Favorite Moments</h1>
+    <div class="gallery">
+        <div class="photo-card"><img src="https://i.ibb.co/v6zkzBbt/a1490ceb-04f4-460f-8c64-d7c58205da04.jpg"></div>
+        <div class="photo-card"><img src="https://i.ibb.co/FL82BTt4/12b6cfaa-975f-422b-9202-c31b31487238.jpg"></div>
+        <div class="photo-card"><img src="https://i.ibb.co/n4Jfhyb/3394c709-6c13-4d0c-9d5f-9b24aaf294a0-1.jpg"></div>
+    </div>
+    <button class="btn-red" onclick="showVideoScroll()">Our Memories Baby huhuhu ↓</button>
+</div>
+
+<div id="video-scroll-screen">
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video1.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video2.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video3.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video4.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video5.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video6.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video7.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video8.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video9.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video10.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video11.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video12.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video13.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video14.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video15.mp4" type="video/mp4"></video></div></div>
+
+    <div class="video-snap-container">
+        <div style="text-align: center;">
+            <p style="color: white; font-weight: bold;">That's Not All Po There's More!!</p>
+            <button class="btn-red" onclick="unlockLetter()">Read My Letter</button>
+        </div>
+    </div>
+</div>
+
+<div id="letter-screen" class="stage">
+    <h1>My Dearest Sopi,</h1>
+    <div id="typewriter"></div>
+    <button id="next-to-question" class="btn-red" style="display:none;" onclick="navigateTo('question-screen')">Next Surprise ✨</button>
+</div>
+
+<div id="question-screen" class="stage">
+    <h1>Will you be my Valentine? 💖</h1>
+    <div style="display: flex; gap: 15px;">
+        <button class="btn-red" onclick="navigateTo('planner-screen')">OPOOO!!</button>
+        <button id="no-btn" class="btn-red" style="background:#999;" onmouseover="moveNo()">no pakipot muna hehe</button>
+    </div>
+</div>
+
+<div id="planner-screen" class="stage">
+    <h2>Answer These Baby Ko!! 📝</h2>
+
+    <form id="valentine-form">
+        <div class="planner-group">
+            <label>What do you like about me?</label>
+            <input type="text" name="What I like about you" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>When did you start to like me?</label>
+            <input type="text" name="When I started liking you" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>Do you see me in your dreams often?</label>
+            <input type="text" name="Dreams about you" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>Do I lookalike dwight ramos?</label>
+            <input type="text" name="Dwight Ramos lookalike" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>From 1 to 10 rank my kulit</label>
+            <input type="text" name="Kulit rank" placeholder="1-10...">
+        </div>
+
+        <div class="planner-group">
+            <label>From 1 to 10 rank my handsomeness</label>
+            <input type="text" name="Handsomeness rank" placeholder="1-10...">
+        </div>
+
+        <div class="planner-group">
+            <label>In one in a million do you agree im different from other guys?</label>
+            <input type="text" name="Are you different" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>What is your main dream with me?</label>
+            <input type="text" name="Main dream" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>Did you love me at the first sight too?</label>
+            <input type="text" name="Love at first sight" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>When we are hugging what comes to your mind?</label>
+            <input type="text" name="Hugging thoughts" placeholder="Type here...">
+        </div>
+
+        <div class="planner-group">
+            <label>From 1 to 10 rank your comfyness when we're cuddling together</label>
+            <input type="text" name="Cuddle comfyness" placeholder="1-10...">
+        </div>
+
+        <div class="planner-group">
+            <label>Lastly baby, what feelings did you felt when we kissed each other at the first time</label>
+            <input type="text" name="First kiss feeling" placeholder="Type here...">
+        </div>
+
+        <button type="button" class="btn-red" id="submit-btn" onclick="sendAnswers()">DONE! ❤️</button>
+    </form>
+</div>
+
+<div id="message-screen" class="stage">
+    <div id="final-msg" style="opacity:0; text-align:center;">
+        <h1 style="font-size: 2.5rem;">HAPPY VALENTINES BABY SOPIII!</h1>
+        <p>I Love You Forever and Ever!!! ❤️</p>
+    </div>
+</div>
+
+<script>
+    function navigateTo(stageId) {
+        document.querySelectorAll('.stage, #video-scroll-screen').forEach(s => s.style.display = 'none');
+        const target = document.getElementById(stageId);
+        target.style.display = (stageId === 'video-scroll-screen') ? 'block' : 'flex';
+        window.scrollTo(0, 0);
+    }
+
+    function unlockGallery() {
+        // FIXED PASSWORD LOGIC
+        if (document.getElementById('passInput').value === "kisss") {
+            document.getElementById('bg-audio').play().catch(() => {});
+            navigateTo('gallery-screen');
+        } else { alert("Mali baby! Hint: Kaya Moyan Hula Lang Go Go Go!!!"); }
+    }
+
+    function showVideoScroll() {
+        navigateTo('video-scroll-screen');
+        const videos = document.querySelectorAll('.scroll-vid');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.play();
+                else entry.target.pause();
+            });
+        }, { threshold: 0.5 });
+        videos.forEach(v => observer.observe(v));
+    }
+
+    function unlockLetter() { navigateTo('letter-screen'); typeWriter(); }
+
+    const message = `Happy Valentine’s, babyy! So ayan na, sinabi ko na yung password, HAHAHAHA.Una sa lahat, para sa’yo lang ’to—pinaka mamahal kong baby.
+Bago po ang lahat, maraming maraming salamat, babyy, sa napakaraming bagay 🥹🥹. I really appreciate everything, from the bottom of my heart pooo. 
+  
+Lagi mong pinaparamdam sa’kin na hindi ako nag-iisa sa lahat ng bagay, babyy. Salamat din po dahil kahit gaano pa tayo katagal maghintayan sa isa’t isa, hindi ko na kailangang magdalawang-isip—pupunta ka, kasi pupunta ka po talaga para sa’kin. Dahil ganon natin kamahal ang isa’t isa po.
+
+Hindi lang po kita girlfriend, talaga, baby. Ikaw po ang best friend ko, parang nanay ko, at pinaka gusto ko sa lahat—ang maging asawa. Handa mo po iparanas sa’kin yung alaga na hindi ko pa po nararanasan. Sobrang maalaga mo po. 
+
+Bukod sa maganda ka, baby, kahit po tulog ako, feel ko alagang-alaga mo pa rin ako. Salamat po.
+
+Pangako, asawa ko, aalagaan din kita po. Kahit gaano man tayo tumagal, hindi magbabago yung ugali at pag-intindi ko sa’yo, asawa kong maganda.
+
+God’s gift—speaking of that, baby, ikaw po talaga yung regalo na ibinigay sa’kin ni Lord. Hindi ko lang po inakala na sa pagiging masiyahin mo, marami ka po palang dinadala. Huhuhu, I’m crying, baby, habang nagsusulat nito. KAYA I’M VERY, VERY GLAD THAT I MET YOU BEFORE YOU DID WORSE PO 😭😭😭. Hinding-hindi ko na talaga hahayaan na maranasan mo po ulit ’yon, baby.
+
+If you have problems, huwag mong kakalimutan—may asawa ka na po. Yayakapin kita, baby ko. Ilabas mo lahat ng problems mo. Tulad ng pangako natin po: “Kapag napagod, magpapahinga sa isa’t isa.”
+
+Follow your dreams, baby ko, dahil ’yon din po ang gusto mo para sa’kin. Let’s follow our dreams, please po. Keep going kahit na mahirap, baby ko. Huwag ka po susuko. Dahil minsan na rin po akong dumaan sa ganyan—wala pong point ang sumuko, baby. Wala pong masama mag-try nang mag-try.
+
+Pero pansin ko, baby, ever since, super lakas mo na. Mas malakas ka pa sa’kin. Full of positivity ka na po. Kahit may problems, nagiging biro na lang sa’yo. I’m so proud. My baby is like that. I could never imagine that before po, after mo magkwento sa’kin. Hehehe. You’re the best, babyy!!
+
+I can’t afford losing you, baby. Kaya here I am—I’m gonna always do my maximum efforts just to see you feel loved and feel safe. Laugh always, baby. Tawa ka lang po. Ang cute ng tawa mo at ng ngiti mo, kasi yung mga mata mo parang ngumngiti rin kapag happy ka po. Kaya ang ganda mo, baby.
+
+Don’t forget po, baby, to pray huh. Always be yourself and be confident lang po. You’re more capable pa, baby—hindi mo lang alam po. Malakas at matalino ka, baby. Kapag may gabay pa po ni Lord, lalo ka pong lalakas at tatalino. Kasi every time na mag-pray ka po, namo-motivate ka, baby, dahil din sa mga nasa itaas na mahal mo sa buhay na sinasabihan kang huwag panghinaan ng loob po.
+
+Baby, I love you, kaya huwag ka na iiyak. Ang ganda niyan huh. Worth it ang sakit ng likod at init ng mga mata ko sa paggawa nito, makita lang kitang masaya. Andito lang po ako palagi, asawa ko. Mahal na mahal kita po. Ingatan mo po ang sarili mo, baby. Sundin mo po ang mga bilin ko huh para hindi ka po magkasakit.
+
+Kasing ganda ka pa rin ng flowers, baby, pero ikaw yung bulaklak na hindi lang para sa ganda at halimuyak. Ikaw po yung bulaklak na may kakayahang mamulaklak sa gitna ng tagtuyot at kalamidad. Kaya po yung ibibigay ko sa’yo ay made with effort but beautiful—hindi lang dahil deserve mo po, kundi dahil mahal na mahal kita, aking asawa. Mwah! 💐💖`;
+
+    function typeWriter() {
+        let i = 0; const target = document.getElementById("typewriter");
+        target.innerHTML = "";
+        function type() {
+            if (i < message.length) {
+                target.innerHTML += message.charAt(i) === "\n" ? "<br>" : message.charAt(i);
+                i++; setTimeout(type, 40);
+            } else { document.getElementById('next-to-question').style.display='block'; }
+        } type();
+    }
+
+    function moveNo() {
+        const btn = document.getElementById('no-btn');
+        btn.style.position = 'fixed';
+        btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+        btn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+    }
+
+    async function sendAnswers() {
+        const btn = document.getElementById('submit-btn');
+        const form = document.getElementById('valentine-form');
+        const formData = new FormData(form);
+
+        btn.innerText = "Sending... 💌";
+        btn.disabled = true;
+
+        try {
+            const response = await fetch('https://formspree.io/f/mvzbgqnb', {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                showFinalMessage();
+            } else {
+                alert("Mali baby! Error sending. Please screenshot for me! ❤️");
+                showFinalMessage();
+            }
+        } catch (error) {
+            showFinalMessage();
+        }
+    }
+
+    function showFinalMessage() {
+        navigateTo('message-screen');
+        document.getElementById('final-msg').style.opacity = '1';
+        setInterval(createHeart, 100);
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart-float');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.color = ['#ff4d6d', '#ffffff', '#ffb3c1'][Math.floor(Math.random()*3)];
+        heart.style.fontSize = (Math.random() * 30 + 10) + 'px';
+        const duration = Math.random() * 3 + 2;
+        heart.style.animationDuration = duration + 's';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), duration * 1000);
+    }
+</script>
+</body>
+</html>
