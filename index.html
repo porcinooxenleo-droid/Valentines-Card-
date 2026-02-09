@@ -111,11 +111,14 @@
 <audio id="bg-audio" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
 
 <div id="login-screen" class="stage">
-    <div class="login-gif-container"><img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Zic3B4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JnF0PWc/MDJ9Ibh3vUzXm/giphy.gif"></div>
+    <div class="login-gif-container">
+        <img src="login.gif" alt="Welcome" onerror="console.log('GIF failed to load from local folder')">
+    </div>
     <h2>HI BABY SOPIEEEE!! <3</h2>
     <input type="password" id="passInput" placeholder="Password...">
     <button class="btn-red" onclick="unlockGallery()">UNLOCK MY SURPRISE!!</button>
-    <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); cursor:pointer; text-decoration:underline;">Need a hint?</button>
+    
+    <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); cursor:pointer; text-decoration:underline; font-family: 'Quicksand', sans-serif;">Need a hint?</button>
     <p id="hint">Hint: Secret Muna 😛😛😛</p>
 </div>
 
@@ -257,4 +260,5 @@
     }
 </script>
 </body>
+
 </html>
