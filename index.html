@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #ff4d6d;
+            --soft-pink: #fff0f3;
+            --dark-red: #800e13;
+            --parchment: #fffaf0;
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Quicksand', 'Segoe UI', sans-serif;
+            background-color: var(--soft-pink);
+            overflow: hidden;
+        }
+
+        /* NEW CLEAN SCREEN SYSTEM */
+        .stage {
+            position: fixed;
+            inset: 0;
+            display: none; /* Hide all by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--soft-pink);
+            z-index: 10;
+        }
+
+        #login-screen { display: flex; z-index: 100; background-color: #ffb3c1; }
+
+        /* HEADER TEXTS */
+        h1, h2 { color: var(--dark-red); text-align: center; padding: 0 10px; }
+
+        /* LOGIN SPECIFIC */
+        .login-gif-container { width: 150px; margin-bottom: 20px; }
+        .login-gif-container img { width: 100%; border-radius: 20px; }
+        #passInput {
+            width: 80%; max-width: 250px; padding: 12px;
+            border-radius: 20px; border: 2px solid var(--primary-red);
+            text-align: center; outline: none; margin-bottom: 10px;
+        }
+        #hint { display: none; font-style: italic; color: var(--dark-red); font-weight: bold; margin-top: 5px; }
+
+        /* GALLERY SCREEN */
+        #gallery-screen { overflow-y: auto; justify-content: flex-start; padding-top: 40px; }
+        .gallery { display: grid; grid-template-columns: 1fr; gap: 20px; width: 90%; }
+        .photo-card { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .photo-card img { width: 100%; border-radius: 10px; }
+        .photo-caption { margin-top: 10px; font-weight: bold; text-align: center; color: var(--dark-red); }
+
+        /* VIDEO SCROLL SCREEN */
+        #video-scroll-screen { 
+            background-color: #1a1a1a; 
+            overflow-y: scroll; 
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+        }
+        .video-snap-container { 
+            width: 100%; height: 100vh; scroll-snap-align: start; 
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .video-card-wrapper {
+            width: 90%; max-width: 320px; height: 80vh;
+            background: #000; border-radius: 30px; border: 4px solid var(--primary-red);
+            overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        .video-card-wrapper::before { content: "Loading memory... ❤️"; color: white; position: absolute; font-size: 0.8rem; }
+        .scroll-vid { width: 100%; height: 100%; object-fit: cover; z-index: 2; position: relative; }
+        .scroll-hint { 
+            position: absolute; bottom: 30px; color: white; background: rgba(255, 77, 109, 0.8);
+            padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; z-index: 5;
+            animation: bounce 2s infinite;
+        }
+
+        /* LETTER SCREEN */
+        #letter-screen { background-color: var(--parchment); overflow-y: auto; justify-content: flex-start; padding: 50px 20px; }
+
+        /* BUTTONS */
+        .btn-red { 
+            background-color: var(--primary-red); color: white; border: none; 
+            padding: 15px 30px; border-radius: 30px; cursor: pointer; 
+            font-size: 1rem; font-weight: bold; margin: 10px 0; font-family: 'Quicksand';
+        }
+
+        /* PLANNER */
+        .planner-group { margin: 15px 0; display: flex; flex-direction: column; width: 80%; }
+        select, input[type="time"] { padding: 10px; border-radius: 10px; border: 1px solid var(--primary-red); }
+
+        /* FINAL CELEBRATION */
+        .video-container { width: 90%; max-width: 400px; background: white; padding: 10px; border-radius: 20px; text-align: center; }
+        #final-video { width: 100%; border-radius: 15px; }
+
+        .heart-float { position: absolute; bottom: -50px; color: var(--primary-red); font-size: 20px; animation: floatUp linear forwards; }
+        @keyframes floatUp { to { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+    </style>
+</head>
+<body>
+
+<audio id="bg-audio" loop preload="auto"><source src="music.mp3" type="audio/mpeg"></audio>
+
+<div id="login-screen" class="stage">
+    <div class="login-gif-container">
+        <img src="login.gif" alt="Welcome" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Zic3B4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JnF0PWc/MDJ9Ibh3vUzXm/giphy.gif'">
+    </div>
+    <h2>HI BABY SOPIEEEE I MADE THIS FOR U!! <3</h2>
+    <input type="password" id="passInput" placeholder="Password...">
+    <button class="btn-red" onclick="unlockGallery()">UNLOCK MY SURPRISE!!</button>
+    <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); cursor:pointer; text-decoration:underline;">Need a hint?</button>
+    <p id="hint">Hint: Secret Muna 😛😛😛</p>
+</div>
+
+<div id="gallery-screen" class="stage">
+    <h1>Our Favorite Moments</h1>
+    <div class="gallery">
+        <div class="photo-card"><img src="https://i.ibb.co/v6zkzBbt/a1490ceb-04f4-460f-8c64-d7c58205da04.jpg"><div class="photo-caption">The Day We First met 🌷🎥</div></div>
+        <div class="photo-card"><img src="https://i.ibb.co/FL82BTt4/12b6cfaa-975f-422b-9202-c31b31487238.jpg"><div class="photo-caption">The Best Date☀️🌅</div></div>
+        <div class="photo-card"><img src="https://i.ibb.co/n4Jfhyb/3394c709-6c13-4d0c-9d5f-9b24aaf294a0-1.jpg"><div class="photo-caption">Our Best Photo 📷📷</div></div>
+    </div>
+    <button class="btn-red" onclick="showVideoScroll()">Watch Our Videos ↓</button>
+</div>
+
+<div id="video-scroll-screen" class="stage">
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video1.mp4" type="video/mp4"></video></div><div class="scroll-hint">Scroll down! ☝️ Tap for sound 🔊</div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video2.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video3.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video4.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video5.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video6.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video7.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video8.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video9.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video10.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video11.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video12.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video13.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video14.mp4" type="video/mp4"></video></div></div>
+    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted onclick="this.muted=!this.muted"><source src="video15.mp4" type="video/mp4"></video></div></div>
+
+    <div class="video-snap-container">
+        <div style="text-align: center;">
+            <p style="color: white; font-weight: bold; padding: 20px;">wait babyyy heres moreee !!!</p>
+            <button class="btn-red" onclick="unlockLetter()">Now, Read My Letter ❤️</button>
+        </div>
+    </div>
+</div>
+
+<div id="letter-screen" class="stage">
+    <h1>My Dearest Sopi,</h1>
+    <div id="typewriter" style="max-width: 600px; line-height: 1.8; font-size: 1.15rem; color: #333;"></div>
+    <button id="next-to-question" class="btn-red" style="display:none;" onclick="showQuestion()">Next Surprise ✨</button>
+</div>
+
+<div id="question-screen" class="stage">
+    <h1>Will you be my Valentine? 💖</h1>
+    <div style="display: flex; gap: 15px;">
+        <button class="btn-red" onclick="showPlanner()">OPOOO!!</button>
+        <button id="no-btn" class="btn-red" style="background:#999;" onmouseover="moveNo()">no pakipot muna hehe</button>
+    </div>
+</div>
+
+<div id="planner-screen" class="stage">
+    <h2>Let's Plan Our Date! 🗓️</h2>
+    <div class="planner-group"><label>Where are we eating?</label>
+        <select id="food"><option>Inasal 🍗</option><option>Mcdo 🍟</option><option>Samgyupsal 🥓</option></select>
+    </div>
+    <div class="planner-group"><label>Couple shirt color?</label>
+        <select id="shirtColor"><option>Green 💚</option><option>Maroon ❤️</option><option>White 🤍</option></select>
+    </div>
+    <div class="planner-group"><label>What time?</label><input type="time" id="meetTime"></div>
+    <button class="btn-red" onclick="triggerCelebration()">DONE! SEE U SOON! ❤️</button>
+</div>
+
+<div id="final-celebration" class="stage">
+    <div class="video-container">
+        <video id="final-video" playsinline><source src="https://jumpshare.com/v/6I1ITPE92Ofe7LrEfCHC/download" type="video/mp4"></video>
+        <button id="play-vid-btn" class="btn-red" onclick="startVideo()">▶ Play Our Final Video</button>
+        <button id="next-to-final" class="btn-red" style="display:none;" onclick="showFinalMessage()">Next ❤️</button>
+    </div>
+</div>
+
+<div id="message-screen" class="stage">
+    <div class="final-text" style="font-size: 1.5rem; color: var(--dark-red); font-weight: bold;">Happy Valentines Baby Sopiii! I Love You Forever!!! ❤️</div>
+</div>
+
+<script>
+    // CLEAN SCREEN SWITCHER
+    function navigateTo(stageId) {
+        document.querySelectorAll('.stage').forEach(s => s.style.display = 'none');
+        document.getElementById(stageId).style.display = 'flex';
+    }
+
+    function unlockGallery() {
+        if (document.getElementById('passInput').value === "12/15/2024") {
+            const music = document.getElementById('bg-audio');
+            music.play().catch(e => console.log("Music blocked"));
+            navigateTo('gallery-screen');
+        } else { alert("Wrong password!"); }
+    }
+
+    function showVideoScroll() {
+        navigateTo('video-scroll-screen');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.play();
+                else entry.target.pause();
+            });
+        }, { threshold: 0.6 });
+        document.querySelectorAll('.scroll-vid').forEach(v => observer.observe(v));
+    }
+
+    function unlockLetter() {
+        navigateTo('letter-screen');
+        typeWriter();
+    }
+
+    const message = "I was trying to find the right words to tell you how much you mean to me, but honestly, no amount of code or text could ever be enough to capture what I feel. Looking back at our journey, from the very first time we spoke to our 'bossing' call sign, every single moment has become a core memory for me. \n\nYou aren't just my girlfriend; you're my best friend, my peace, and my safest home. Thank you for staying by my side. I promise to keep choosing you, day after day.\n\nAlways yours,\n[Your Hubby Oxen]";
+
+    function typeWriter() {
+        let i = 0; const target = document.getElementById("typewriter");
+        target.innerHTML = "";
+        function type() {
+            if (i < message.length) {
+                target.innerHTML += message.charAt(i) === "\n" ? "<br>" : message.charAt(i);
+                i++;
+                setTimeout(type, 40);
+            } else {
+                document.getElementById('next-to-question').style.display='block';
+            }
+        } type();
+    }
+
+    function showQuestion() { navigateTo('question-screen'); }
+
+    function moveNo() {
+        const btn = document.getElementById('no-btn');
+        btn.style.position = 'absolute';
+        btn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
+        btn.style.top = Math.random() * (window.innerHeight - 100) + 'px';
+    }
+
+    function showPlanner() { navigateTo('planner-screen'); }
+
+    function triggerCelebration() {
+        document.getElementById('bg-audio').pause();
+        navigateTo('final-celebration');
+    }
+
+    function startVideo() {
+        const vid = document.getElementById('final-video');
+        vid.play();
+        document.getElementById('play-vid-btn').style.display = 'none';
+        vid.onended = () => document.getElementById('next-to-final').style.display = 'block';
+    }
+
+    function showFinalMessage() {
+        navigateTo('message-screen');
+        setInterval(createHeart, 100);
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.classList.add('heart-float');
+        heart.innerHTML = '❤️';
+        heart.style.left = Math.random() * 100 + 'vw';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4000);
+    }
+</script>
+</body>
+</html>
