@@ -67,14 +67,20 @@
             box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
         }
 
-        .gallery { display: grid; gap: 20px; width: 90%; margin-bottom: 20px; }
-        .photo-card { background: white; padding: 10px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .photo-card img { width: 100%; border-radius: 10px; }
+        /* Updated Gallery Grid for more photos */
+        .gallery { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            width: 90%; 
+            margin-bottom: 20px; 
+        }
+        .photo-card { background: white; padding: 8px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .photo-card img { width: 100%; border-radius: 8px; display: block; }
 
         #letter-screen { background-color: var(--parchment); padding: 60px 25px; justify-content: flex-start; }
         #typewriter { max-width: 600px; line-height: 1.8; font-size: 1.1rem; color: #333; text-align: left; white-space: pre-wrap; }
 
-        /* QUESTIONNAIRE SCROLLING FIX */
         #planner-screen { justify-content: flex-start; overflow-y: auto; padding-top: 40px; }
 
         .heart-float {
@@ -118,7 +124,7 @@
 
     <div style="text-align: center; margin-top: 5px;">
         <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); text-decoration:underline; cursor:pointer; font-family:'Quicksand';">Need a hint?</button>
-        <p id="hint" style="display:none; font-style:italic; color:var(--dark-red); margin-top:10px;">Hint: February 13th</p>
+        <p id="hint" style="display:none; font-style:italic; color:var(--dark-red); margin-top:10px;">Hint: 12/15/2024</p>
     </div>
 </div>
 
@@ -128,6 +134,10 @@
         <div class="photo-card"><img src="https://i.ibb.co/v6zkzBbt/a1490ceb-04f4-460f-8c64-d7c58205da04.jpg"></div>
         <div class="photo-card"><img src="https://i.ibb.co/FL82BTt4/12b6cfaa-975f-422b-9202-c31b31487238.jpg"></div>
         <div class="photo-card"><img src="https://i.ibb.co/n4Jfhyb/3394c709-6c13-4d0c-9d5f-9b24aaf294a0-1.jpg"></div>
+        
+        <div class="photo-card"><img src="https://via.placeholder.com/300x400?text=Photo+4"></div>
+        <div class="photo-card"><img src="https://via.placeholder.com/300x400?text=Photo+5"></div>
+        <div class="photo-card"><img src="https://via.placeholder.com/300x400?text=Photo+6"></div>
     </div>
     <button class="btn-red" onclick="showVideoScroll()">Our Memories Baby huhuhu ↓</button>
 </div>
@@ -255,11 +265,10 @@
     }
 
     function unlockGallery() {
-        // FIXED PASSWORD LOGIC
-        if (document.getElementById('passInput').value === "kisss") {
+        if (document.getElementById('passInput').value === "12/15/2024") {
             document.getElementById('bg-audio').play().catch(() => {});
             navigateTo('gallery-screen');
-        } else { alert("Mali baby! Hint: Kaya Moyan Hula Lang Go Go Go!!!"); }
+        } else { alert("Mali baby! Hint: Our Anniversary (12/15/2024)"); }
     }
 
     function showVideoScroll() {
@@ -276,13 +285,12 @@
 
     function unlockLetter() { navigateTo('letter-screen'); typeWriter(); }
 
-    const message = `Happy Valentine’s, babyy! So ayan na, sinabi ko na yung password, HAHAHAHA.Una sa lahat, para sa’yo lang ’to—pinaka mamahal kong baby.
-Bago po ang lahat, maraming maraming salamat, babyy, sa napakaraming bagay 🥹🥹. I really appreciate everything, from the bottom of my heart pooo. 
-  
-Lagi mong pinaparamdam sa’kin na hindi ako nag-iisa sa lahat ng bagay, babyy. Salamat din po dahil kahit gaano pa tayo katagal maghintayan sa isa’t isa, hindi ko na kailangang magdalawang-isip—pupunta ka, kasi pupunta ka po talaga para sa’kin. Dahil ganon natin kamahal ang isa’t isa po.
+    const message = `Happy Valentine’s, babyy! So ayan na, sinabi ko na yung password, HAHAHAHA.
+Una sa lahat, para sa’yo lang ’to—pinaka mamahal kong baby.
+
+Bago po ang lahat, maraming maraming salamat, babyy, sa napakaraming bagay 🥹🥹. I really appreciate everything, from the bottom of my heart pooo. Lagi mong pinaparamdam sa’kin na hindi ako nag-iisa sa lahat ng bagay, babyy. Salamat din po dahil kahit gaano pa tayo katagal maghintayan sa isa’t isa, hindi ko na kailangang magdalawang-isip—pupunta ka, kasi pupunta ka po talaga para sa’kin. Dahil ganon natin kamahal ang isa’t isa po.
 
 Hindi lang po kita girlfriend, talaga, baby. Ikaw po ang best friend ko, parang nanay ko, at pinaka gusto ko sa lahat—ang maging asawa. Handa mo po iparanas sa’kin yung alaga na hindi ko pa po nararanasan. Sobrang maalaga mo po. 
-
 Bukod sa maganda ka, baby, kahit po tulog ako, feel ko alagang-alaga mo pa rin ako. Salamat po.
 
 Pangako, asawa ko, aalagaan din kita po. Kahit gaano man tayo tumagal, hindi magbabago yung ugali at pag-intindi ko sa’yo, asawa kong maganda.
