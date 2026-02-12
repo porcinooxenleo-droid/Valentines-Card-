@@ -15,11 +15,10 @@
 
         body, html {
             margin: 0; padding: 0;
-            min-height: 100%;
+            height: 100%;
             font-family: 'Quicksand', 'Segoe UI', sans-serif;
             background-color: var(--soft-pink);
             overflow-x: hidden;
-            overflow-y: auto !important;
         }
 
         .stage {
@@ -32,32 +31,49 @@
             position: relative;
             background-color: var(--soft-pink);
             box-sizing: border-box;
-            padding: 40px 0;
         }
 
         #login-screen { display: flex; background-color: #ffb3c1; z-index: 100; }
 
         h1, h2 { color: var(--dark-red); text-align: center; margin: 10px 0; padding: 0 15px; }
 
-        /* VIDEO SCROLL SYSTEM */
-        #video-scroll-screen {
-            background-color: #1a1a1a;
+        /* SNAP SCROLL SYSTEM FOR PHOTOS & VIDEOS */
+        #gallery-screen, #video-scroll-screen {
             display: none;
             width: 100%;
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            background-color: #1a1a1a;
         }
 
-        .video-snap-container {
-            width: 100%; height: 100vh;
-            display: flex; align-items: center; justify-content: center;
+        .snap-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             scroll-snap-align: start;
+            position: relative;
         }
 
-        .video-card-wrapper {
-            width: 85%; max-width: 320px; height: 75vh;
-            background: #000; border-radius: 30px; border: 4px solid var(--primary-red);
-            overflow: hidden; position: relative;
+        .card-wrapper {
+            width: 85%;
+            max-width: 320px;
+            height: 75vh;
+            background: #fff;
+            border-radius: 30px;
+            border: 4px solid var(--primary-red);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .scroll-vid { width: 100%; height: 100%; object-fit: cover; }
+
+        .card-wrapper img, .card-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         /* UI ELEMENTS */
         .btn-red {
@@ -67,17 +83,7 @@
             box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
         }
 
-        .gallery { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-            width: 90%; 
-            margin-bottom: 20px; 
-        }
-        .photo-card { background: white; padding: 8px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .photo-card img { width: 100%; border-radius: 8px; display: block; }
-
-        #letter-screen { background-color: var(--parchment); padding: 60px 25px; justify-content: flex-start; }
+        #letter-screen { background-color: var(--parchment); padding: 60px 25px; justify-content: flex-start; overflow-y: auto; display: none;}
         #typewriter { max-width: 600px; line-height: 1.8; font-size: 1.1rem; color: #333; text-align: left; white-space: pre-wrap; }
 
         #planner-screen { justify-content: flex-start; overflow-y: auto; padding-top: 40px; }
@@ -91,22 +97,9 @@
         .planner-group { margin: 12px 0; display: flex; flex-direction: column; width: 85%; max-width: 400px; }
 
         input[type="text"], input[type="password"] {
-            padding: 12px;
-            border-radius: 15px;
-            border: 2px dashed var(--primary-red);
-            font-family: 'Quicksand';
-            background: white;
-            color: var(--dark-red);
-            outline: none;
-            text-align: center;
-            margin-top: 5px;
-        }
-        label {
-            font-weight: bold;
-            color: var(--dark-red);
-            margin-bottom: 2px;
-            font-size: 1rem;
-            text-align: center;
+            padding: 12px; border-radius: 15px; border: 2px dashed var(--primary-red);
+            font-family: 'Quicksand'; background: white; color: var(--dark-red);
+            outline: none; text-align: center; margin-top: 5px;
         }
     </style>
 </head>
@@ -118,67 +111,54 @@
     <img src="login.gif" alt="Welcome" style="width:150px; border-radius:20px; margin-bottom:20px;">
     <h2>HI BABY SOPIEEEE!! ❤️</h2>
     <input type="password" id="passInput" placeholder="Password...">
-
     <button class="btn-red" onclick="unlockGallery()">UNLOCK MY SURPRISE!!</button>
-
-    <div style="text-align: center; margin-top: 5px;">
-        <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); text-decoration:underline; cursor:pointer; font-family:'Quicksand';">Need a hint?</button>
-        <p id="hint" style="display:none; font-style:italic; color:var(--dark-red); margin-top:10px;">Hint: 12/15/2024</p>
+    <div style="text-align: center;">
+        <button onclick="document.getElementById('hint').style.display='block'" style="background:none; border:none; color:var(--dark-red); text-decoration:underline;">Need a hint?</button>
+        <p id="hint" style="display:none; font-style:italic; color:var(--dark-red);">Hint: February 14th</p>
     </div>
 </div>
 
-<div id="gallery-screen" class="stage">
-    <h1>Our Favorite Moments</h1>
-    <div class="gallery">
-        <div class="photo-card"><img src="https://i.ibb.co/KzL1XJjd/4004abe0-4454-45de-aac6-2f881329936f.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/hF9fK9j9/bf29d981-dbf2-4275-8d32-9fc4f64c46f9.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/4Z7MMkTS/2ebd9c4f-9cff-486b-9cd8-02f5edd53a68.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/nqSvpCHt/8fcaa6e9-ed73-4516-bad9-f9bcb1617c28.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/vxB8FtB4/d5e118aa-9349-41f2-a90b-d5baf0b1b53a.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/k2DSvxNR/6c762439-7514-4986-8409-3e4d7836d404.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/QvBDmRYb/287a317b-b4d3-4d4d-abfa-794a9a413d04.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/nMWFv2dz/6a562e65-db9b-4fbd-abaa-e81134bd2b61.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/BHnTPPK0/b5348167-5834-4fde-b46a-25a01f64948b.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/KcXD06LT/7b2ffc5b-f9b2-42fc-80af-08cc2e92b035.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/nqfRqdGp/b440069a-df5f-4ca4-8747-73c3fc180d6a.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/9mhX8mMk/030bf302-0a62-4f31-b308-8ea0c7cc2cea.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/XxxhCMY3/53fecbb2-f76d-4737-9269-648501fd051b.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/bgGcDkpG/8dc543c3-a9ea-43e3-b181-212b114076d8.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/TM16Rrkm/0677502b-3e7f-41a0-a445-bb3ce1d1c85a.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/WpWj1nP3/29a064c5-e4c9-4ba2-8c6f-343afeaae2a2.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/qLj5THFj/693ac68c-fa18-49d8-8d5c-8c0668e08901.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/b8HV1J7/cb6dfb4e-93fa-4f16-baf8-aed5948cbd86.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/gM74stgK/93183be2-3b92-47b2-b898-dde658d0fcb7.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/LhPxT5wZ/a08e2ab2-8079-4fa5-9749-1fee8f780de7.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/6cMCG193/59839afc-98ff-440b-86e0-4e863aaa1b57.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/BVQ2G8k4/5b14f226-2c46-437d-ad98-de0ecd1f7383.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/QF0H9ShQ/efeb796a-49e4-479d-8502-dd296e04cfc0.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/rRR7gYds/5bd73e65-3332-4be9-8cc8-47b4f58a42f3.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/PvHPdmVS/6ef4c1e9-574c-4858-8f91-89eb1ce09023.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/gMZ6qd6f/d3d36d8c-afa5-45de-ac12-5418c0fdf47c.jpg"></div>
-        <div class="photo-card"><img src="https://i.ibb.co/x8hN4ngY/49a4f95c-cd3b-4371-bdac-960a23adeda2.jpg"></div>
+<div id="gallery-screen">
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/KzL1XJjd/4004abe0-4454-45de-aac6-2f881329936f.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/hF9fK9j9/bf29d981-dbf2-4275-8d32-9fc4f64c46f9.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/4Z7MMkTS/2ebd9c4f-9cff-486b-9cd8-02f5edd53a68.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/nqSvpCHt/8fcaa6e9-ed73-4516-bad9-f9bcb1617c28.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/vxB8FtB4/d5e118aa-9349-41f2-a90b-d5baf0b1b53a.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/k2DSvxNR/6c762439-7514-4986-8409-3e4d7836d404.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/QvBDmRYb/287a317b-b4d3-4d4d-abfa-794a9a413d04.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/nMWFv2dz/6a562e65-db9b-4fbd-abaa-e81134bd2b61.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/BHnTPPK0/b5348167-5834-4fde-b46a-25a01f64948b.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/KcXD06LT/7b2ffc5b-f9b2-42fc-80af-08cc2e92b035.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/nqfRqdGp/b440069a-df5f-4ca4-8747-73c3fc180d6a.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/9mhX8mMk/030bf302-0a62-4f31-b308-8ea0c7cc2cea.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/XxxhCMY3/53fecbb2-f76d-4737-9269-648501fd051b.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/bgGcDkpG/8dc543c3-a9ea-43e3-b181-212b114076d8.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/TM16Rrkm/0677502b-3e7f-41a0-a445-bb3ce1d1c85a.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/WpWj1nP3/29a064c5-e4c9-4ba2-8c6f-343afeaae2a2.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/qLj5THFj/693ac68c-fa18-49d8-8d5c-8c0668e08901.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/b8HV1J7/cb6dfb4e-93fa-4f16-baf8-aed5948cbd86.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/gM74stgK/93183be2-3b92-47b2-b898-dde658d0fcb7.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/LhPxT5wZ/a08e2ab2-8079-4fa5-9749-1fee8f780de7.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/6cMCG193/59839afc-98ff-440b-86e0-4e863aaa1b57.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/BVQ2G8k4/5b14f226-2c46-437d-ad98-de0ecd1f7383.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/QF0H9ShQ/efeb796a-49e4-479d-8502-dd296e04cfc0.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/rRR7gYds/5bd73e65-3332-4be9-8cc8-47b4f58a42f3.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/PvHPdmVS/6ef4c1e9-574c-4858-8f91-89eb1ce09023.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/gMZ6qd6f/d3d36d8c-afa5-45de-ac12-5418c0fdf47c.jpg"></div></div>
+    <div class="snap-container"><div class="card-wrapper"><img src="https://i.ibb.co/x8hN4ngY/49a4f95c-cd3b-4371-bdac-960a23adeda2.jpg"></div></div>
+    
+    <div class="snap-container">
+        <button class="btn-red" onclick="showVideoScroll()">Our Memories Baby huhuhu ↓</button>
     </div>
-    <button class="btn-red" onclick="showVideoScroll()">Our Memories Baby huhuhu ↓</button>
 </div>
 
 <div id="video-scroll-screen">
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video1.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video2.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video3.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video4.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video5.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video6.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video7.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video8.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video9.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video10.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video11.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video12.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video13.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video14.mp4" type="video/mp4"></video></div></div>
-    <div class="video-snap-container"><div class="video-card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video15.mp4" type="video/mp4"></video></div></div>
-
-    <div class="video-snap-container">
+    <div class="snap-container"><div class="card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video1.mp4" type="video/mp4"></video></div></div>
+    <div class="snap-container"><div class="card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video2.mp4" type="video/mp4"></video></div></div>
+    <div class="snap-container"><div class="card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video3.mp4" type="video/mp4"></video></div></div>
+    <div class="snap-container"><div class="card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video4.mp4" type="video/mp4"></video></div></div>
+    <div class="snap-container"><div class="card-wrapper"><video class="scroll-vid" loop playsinline muted><source src="video5.mp4" type="video/mp4"></video></div></div>
+    <div class="snap-container">
         <div style="text-align: center;">
             <p style="color: white; font-weight: bold;">That's Not All Po There's More!!</p>
             <button class="btn-red" onclick="unlockLetter()">Read My Letter</button>
@@ -202,68 +182,19 @@
 
 <div id="planner-screen" class="stage">
     <h2>Answer These Baby Ko!! 📝</h2>
-
     <form id="valentine-form">
-        <div class="planner-group">
-            <label>What do you like about me?</label>
-            <input type="text" name="What I like about you" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>When did you start to like me?</label>
-            <input type="text" name="When I started liking you" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>Do you see me in your dreams often?</label>
-            <input type="text" name="Dreams about you" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>Do I lookalike dwight ramos?</label>
-            <input type="text" name="Dwight Ramos lookalike" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>From 1 to 10 rank my kulit</label>
-            <input type="text" name="Kulit rank" placeholder="1-10...">
-        </div>
-
-        <div class="planner-group">
-            <label>From 1 to 10 rank my handsomeness</label>
-            <input type="text" name="Handsomeness rank" placeholder="1-10...">
-        </div>
-
-        <div class="planner-group">
-            <label>In one in a million do you agree im different from other guys?</label>
-            <input type="text" name="Are you different" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>What is your main dream with me?</label>
-            <input type="text" name="Main dream" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>Did you love me at the first sight too?</label>
-            <input type="text" name="Love at first sight" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>When we are hugging what comes to your mind?</label>
-            <input type="text" name="Hugging thoughts" placeholder="Type here...">
-        </div>
-
-        <div class="planner-group">
-            <label>From 1 to 10 rank your comfyness when we're cuddling together</label>
-            <input type="text" name="Cuddle comfyness" placeholder="1-10...">
-        </div>
-
-        <div class="planner-group">
-            <label>Lastly baby, what feelings did you felt when we kissed each other at the first time</label>
-            <input type="text" name="First kiss feeling" placeholder="Type here...">
-        </div>
-
+        <div class="planner-group"><label>What do you like about me?</label><input type="text" name="Like about me"></div>
+        <div class="planner-group"><label>When did you start to like me?</label><input type="text" name="Start like"></div>
+        <div class="planner-group"><label>Do you see me in your dreams often?</label><input type="text" name="Dreams"></div>
+        <div class="planner-group"><label>Do I lookalike dwight ramos?</label><input type="text" name="Dwight"></div>
+        <div class="planner-group"><label>From 1 to 10 rank my kulit</label><input type="text" name="Kulit"></div>
+        <div class="planner-group"><label>From 1 to 10 rank my handsomeness</label><input type="text" name="Pogi"></div>
+        <div class="planner-group"><label>One in a million, am I different?</label><input type="text" name="Different"></div>
+        <div class="planner-group"><label>What is your main dream with me?</label><input type="text" name="Dream"></div>
+        <div class="planner-group"><label>Did you love me at first sight too?</label><input type="text" name="First sight"></div>
+        <div class="planner-group"><label>Thoughts when we are hugging?</label><input type="text" name="Hugs"></div>
+        <div class="planner-group"><label>Rank cuddle comfyness (1-10)</label><input type="text" name="Cuddle"></div>
+        <div class="planner-group"><label>Feelings during first kiss?</label><input type="text" name="First kiss"></div>
         <button type="button" class="btn-red" id="submit-btn" onclick="sendAnswers()">DONE! ❤️</button>
     </form>
 </div>
@@ -277,9 +208,13 @@
 
 <script>
     function navigateTo(stageId) {
-        document.querySelectorAll('.stage, #video-scroll-screen').forEach(s => s.style.display = 'none');
+        document.querySelectorAll('.stage, #gallery-screen, #video-scroll-screen').forEach(s => s.style.display = 'none');
         const target = document.getElementById(stageId);
-        target.style.display = (stageId === 'video-scroll-screen') ? 'block' : 'flex';
+        if (stageId === 'gallery-screen' || stageId === 'video-scroll-screen') {
+            target.style.display = 'block';
+        } else {
+            target.style.display = 'flex';
+        }
         window.scrollTo(0, 0);
     }
 
@@ -287,7 +222,7 @@
         if (document.getElementById('passInput').value === "12/15/2024") {
             document.getElementById('bg-audio').play().catch(() => {});
             navigateTo('gallery-screen');
-        } else { alert("Mali baby! Hint: Our Anniversary (12/15/2024)"); }
+        } else { alert("Mali baby! Hint: secretttt"); }
     }
 
     function showVideoScroll() {
@@ -304,31 +239,7 @@
 
     function unlockLetter() { navigateTo('letter-screen'); typeWriter(); }
 
-    const message = `Happy Valentine’s, babyy! So ayan na, sinabi ko na yung password, HAHAHAHA.
-Una sa lahat, para sa’yo lang ’to—pinaka mamahal kong baby.
-
-Bago po ang lahat, maraming maraming salamat, babyy, sa napakaraming bagay 🥹🥹. I really appreciate everything, from the bottom of my heart pooo. Lagi mong pinaparamdam sa’kin na hindi ako nag-iisa sa lahat ng bagay, babyy. Salamat din po dahil kahit gaano pa tayo katagal maghintayan sa isa’t isa, hindi ko na kailangang magdalawang-isip—pupunta ka, kasi pupunta ka po talaga para sa’kin. Dahil ganon natin kamahal ang isa’t isa po.
-
-Hindi lang po kita girlfriend, talaga, baby. Ikaw po ang best friend ko, parang nanay ko, at pinaka gusto ko sa lahat—ang maging asawa. Handa mo po iparanas sa’kin yung alaga na hindi ko pa po nararanasan. Sobrang maalaga mo po. 
-Bukod sa maganda ka, baby, kahit po tulog ako, feel ko alagang-alaga mo pa rin ako. Salamat po.
-
-Pangako, asawa ko, aalagaan din kita po. Kahit gaano man tayo tumagal, hindi magbabago yung ugali at pag-intindi ko sa’yo, asawa kong maganda.
-
-God’s gift—speaking of that, baby, ikaw po talaga yung regalo na ibinigay sa’kin ni Lord. Hindi ko lang po inakala na sa pagiging masiyahin mo, marami ka po palang dinadala. Huhuhu, I’m crying, baby, habang nagsusulat nito. KAYA I’M VERY, VERY GLAD THAT I MET YOU BEFORE YOU DID WORSE PO 😭😭😭. Hinding-hindi ko na talaga hahayaan na maranasan mo po ulit ’yon, baby.
-
-If you have problems, huwag mong kakalimutan—may asawa ka na po. Yayakapin kita, baby ko. Ilabas mo lahat ng problems mo. Tulad ng pangako natin po: “Kapag napagod, magpapahinga sa isa’t isa.”
-
-Follow your dreams, baby ko, dahil ’yon din po ang gusto mo para sa’min. Let’s follow our dreams, please po. Keep going kahit na mahirap, baby ko. Huwag ka po susuko. Dahil minsan na rin po akong dumaan sa ganyan—wala pong point ang sumuko, baby. Wala pong masama mag-try nang mag-try.
-
-Pero pansin ko, baby, ever since, super lakas mo na. Mas malakas ka pa sa’kin. Full of positivity ka na po. Kahit may problems, nagiging biro na lang sa’yo. I’m so proud. My baby is like that. I could never imagine that before po, after mo magkwento sa’kin. Hehehe. You’re the best, babyy!!
-
-I can’t afford losing you, baby. Kaya here I am—I’m gonna always do my maximum efforts just to see you feel loved and feel safe. Laugh always, baby. Tawa ka lang po. Ang cute ng tawa mo at ng ngiti mo, kasi yung mga mata mo parang ngumngiti rin kapag happy ka po. Kaya ang ganda mo, baby.
-
-Don’t forget po, baby, to pray huh. Always be yourself and be confident lang po. You’re more capable pa, baby—hindi mo lang alam po. Malakas at matalino ka, baby. Kapag may gabay pa po ni Lord, lalo ka pong lalakas at tatalino. Kasi every time na mag-pray ka po, namo-motivate ka, baby, dahil din sa mga nasa itaas na mahal mo sa buhay na sinasabihan kang huwag panghinaan ng loob po.
-
-Baby, I love you, kaya huwag ka na iiyak. Ang ganda niyan huh. Worth it ang sakit ng likod at init ng mga mata ko sa paggawa nito, makita lang kitang masaya. Andito lang po ako palagi, asawa ko. Mahal na mahal kita po. Ingatan mo po ang sarili mo, baby. Sundin mo po ang mga bilin ko huh para hindi ka po magkasakit.
-
-Kasing ganda ka pa rin ng flowers, baby, pero ikaw yung bulaklak na hindi lang para sa ganda at halimuyak. Ikaw po yung bulaklak na may kakayahang mamulaklak sa gitna ng tagtuyot at kalamidad. Kaya po yung ibibigay ko sa’yo ay made with effort but beautiful—hindi lang dahil deserve mo po, kundi dahil mahal na mahal kita, aking asawa. Mwah! 💐💖`;
+    const message = `Happy Valentine’s, babyy! (Insert your full letter content here...) 💐💖`;
 
     function typeWriter() {
         let i = 0; const target = document.getElementById("typewriter");
@@ -352,32 +263,20 @@ Kasing ganda ka pa rin ng flowers, baby, pero ikaw yung bulaklak na hindi lang p
         const btn = document.getElementById('submit-btn');
         const form = document.getElementById('valentine-form');
         const formData = new FormData(form);
-
         btn.innerText = "Sending... 💌";
         btn.disabled = true;
-
         try {
             const response = await fetch('https://formspree.io/f/mvzbgqnb', {
-                method: 'POST',
-                body: formData,
-                headers: { 'Accept': 'application/json' }
+                method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
             });
-
-            if (response.ok) {
-                showFinalMessage();
-            } else {
-                alert("Mali baby! Error sending. Please screenshot for me! ❤️");
-                showFinalMessage();
-            }
-        } catch (error) {
             showFinalMessage();
-        }
+        } catch (e) { showFinalMessage(); }
     }
 
     function showFinalMessage() {
         navigateTo('message-screen');
         document.getElementById('final-msg').style.opacity = '1';
-        setInterval(createHeart, 100);
+        setInterval(createHeart, 150);
     }
 
     function createHeart() {
@@ -385,7 +284,6 @@ Kasing ganda ka pa rin ng flowers, baby, pero ikaw yung bulaklak na hindi lang p
         heart.classList.add('heart-float');
         heart.innerHTML = '❤️';
         heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.color = ['#ff4d6d', '#ffffff', '#ffb3c1'][Math.floor(Math.random()*3)];
         heart.style.fontSize = (Math.random() * 30 + 10) + 'px';
         const duration = Math.random() * 3 + 2;
         heart.style.animationDuration = duration + 's';
